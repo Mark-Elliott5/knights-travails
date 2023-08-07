@@ -66,7 +66,6 @@ const knightMoves = (start, end) => {
             }
         }
     }
-    // return visited;
 
     const getPaths = (path) => {
         const coordinates = [];
@@ -83,7 +82,7 @@ const knightMoves = (start, end) => {
         outputPaths.push(getPaths(path));
     }
 
-    const shortestPathString = (input) => {
+    const getShortestPath = (input) => {
         let string = '';
         for (path of input) {
             string += `[${path}]\n`;
@@ -91,6 +90,6 @@ const knightMoves = (start, end) => {
         return string;
     }
 
-    console.log(`Here's your shortest path: \n${shortestPathString(outputPaths[0])}`);
+    console.log(`Here's your shortest path: \n${getShortestPath(outputPaths[0])}`);
     return outputPaths;
 }
