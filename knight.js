@@ -2,38 +2,39 @@ const Square = (value, moves, parent = null) => {
     return { value, moves, parent }
 }
 
-const getSquares = (num) => {
-    const [x, y] = getCoord(num);
-    const positions = [
-        [x+1, y+2],
-        [x+2, y+1],
-        [x+2, y-1],
-        [x+1, y-2],
-        [x-1, y-2],
-        [x-2, y-1],
-        [x-2, y+1],
-        [x-1, y+2],
-    ];
-    return positions.map(([x,y]) => validateSquare(x, y));
-}
-
 const getCoord = (square) => {
     const x = ((square)%8);
     const y = Math.floor((square)/8);
     return [x,y];
 }
 
-
-const validateSquare = (x, y) => {
-    if ((x < 0) || (y < 0) || (x > 7) || (y > 7)) {
-        return null;
-    }
-    const square = ((y * 8) + x)
-    return square;
-}
-
 const generateMoves = () => {
     const moves = [];
+
+    const getSquares = (num) => {
+        const [x, y] = getCoord(num);
+        const positions = [
+            [x+1, y+2],
+            [x+2, y+1],
+            [x+2, y-1],
+            [x+1, y-2],
+            [x-1, y-2],
+            [x-2, y-1],
+            [x-2, y+1],
+            [x-1, y+2],
+        ];
+
+        const validateSquare = (x, y) => {
+            if ((x < 0) || (y < 0) || (x > 7) || (y > 7)) {
+                return null;
+            }
+            const square = ((y * 8) + x)
+            return square;
+        }
+
+        return positions.map(([x,y]) => validateSquare(x, y));
+    }
+
     for (let i = 0; i < 64; i++) {
         const squares = getSquares(i);
         moves.push(squares.filter((v) => v != null))
