@@ -1,29 +1,39 @@
-const generateMoves = () => {
-    debugger;
-    const moves = [];
-    const validateSquare = (x, y) => {
-        if ((x < 0) || (y < 0) || (x > 7) || (y > 7)) {
-            return null;
-        }
-        const square = ((y * 8) + x)
-        return square;
-    }
+const Square = (value, moves, parent = null) => {
+    return { value, moves, parent }
+}
 
-    const getSquares = (num) => {
-        const x = ((num)%8);
-        const y = Math.floor((num)/8);
-        const positions = [
-            [x+1, y+2],
-            [x+2, y+1],
-            [x+2, y-1],
-            [x+1, y-2],
-            [x-1, y-2],
-            [x-2, y-1],
-            [x-2, y+1],
-            [x-1, y+2],
-        ];
-        return positions.map(([x,y]) => validateSquare(x, y));
+const getSquares = (num) => {
+    const [x, y] = getCoord(num);
+    const positions = [
+        [x+1, y+2],
+        [x+2, y+1],
+        [x+2, y-1],
+        [x+1, y-2],
+        [x-1, y-2],
+        [x-2, y-1],
+        [x-2, y+1],
+        [x-1, y+2],
+    ];
+    return positions.map(([x,y]) => validateSquare(x, y));
+}
+
+const getCoord = (square) => {
+    const x = ((square)%8);
+    const y = Math.floor((square)/8);
+    return [x,y];
+}
+
+
+const validateSquare = (x, y) => {
+    if ((x < 0) || (y < 0) || (x > 7) || (y > 7)) {
+        return null;
     }
+    const square = ((y * 8) + x)
+    return square;
+}
+
+const generateMoves = () => {
+    const moves = [];
     for (let i = 0; i < 64; i++) {
         const squares = getSquares(i);
         moves.push(squares.filter((v) => v != null))
@@ -34,13 +44,12 @@ const generateMoves = () => {
 const knightMoves = (start, end) => {
     const endNumber = ((end[1] * 8) + end[0]);
     const startNumber = ((start[1] * 8) + start[0]);
-    let path = [];
+    const paths = [];
     let current;
     const visited = [];
     const queue = [];
     const moveList = generateMoves();
     queue.push(Square(endNumber, moveList[endNumber]));
-    let parent;
 
     while (queue.length) {
         current = queue.shift();
@@ -48,26 +57,40 @@ const knightMoves = (start, end) => {
             if (visited.includes(current.moves[i])) {
                 continue;
             }
+            const obj = Square(current.moves[i], moveList[current.moves[i]], current);
+            queue.push(obj);
             if (current.moves[i] === startNumber) {
-                const obj = Square(current.moves[i], moveList[current.moves[i]], parent);
-                path.push(obj);
-                return path;
-            } 
-            parent = current;
-            queue.push(Square(current.moves[i], moveList[current.moves[i]], parent))
+                paths.push(obj);
+            } else {
             visited.push(current.moves[i]);
+            }
         }
     }
     // return visited;
 
+    const getPaths = (path) => {
+        const coordinates = [];
+        let current = path;
+        while (current) {
+            coordinates.push(getCoord(current.value));
+            current = current.parent;
+        }
+        return coordinates;
+    }
 
-    console.log(`Here's your path:`)
-}
+    const outputPaths = [];
+    for (path of paths) {
+        outputPaths.push(getPaths(path));
+    }
 
-const recursiveFunc = (input) => {
-    
-}
+    const shortestPathString = (input) => {
+        let string = '';
+        for (path of input) {
+            string += `[${path}]\n`;
+        }
+        return string;
+    }
 
-const Square = (value, moves, parent = null) => {
-    return { value, moves, parent }
+    console.log(`Here's your shortest path: \n${shortestPathString(outputPaths[0])}`);
+    return outputPaths;
 }
