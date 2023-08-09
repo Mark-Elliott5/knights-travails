@@ -43,6 +43,11 @@ const generateMoves = () => {
 }
 
 const knightMoves = (start, end) => {
+    const verifyCoords = [end[0], end[1], start[0], start[1]];
+    if (verifyCoords.find((e) => (e < 0 || e > 7))) {
+        throw new Error('Coordinates must be in range of 0 to 7. Execution aborted.');
+    }
+
     const endNumber = ((end[1] * 8) + end[0]);
     const startNumber = ((start[1] * 8) + start[0]);
     const paths = [];
